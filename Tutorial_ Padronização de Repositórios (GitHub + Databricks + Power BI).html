@@ -1,0 +1,177 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}</style><style>:root{color-scheme:light dark;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}}:root[data-theme="dark"]{color-scheme:dark;--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}:root[data-theme="light"]{color-scheme:light}@media print{:root,:root[data-theme="dark"]{color-scheme:light;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}}body{background:var(--md-bg);color:var(--md-text);max-width:720px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:10px;font:14px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',sans-serif;overflow-wrap:break-word}body>:first-child{margin-top:0}h1,h2,h3,h4,h5,h6{margin:6px 0 0;line-height:1.25;font-weight:600;text-wrap:balance}h1{font-size:1.35em}h2{font-size:1.15em;color:var(--md-muted)}h3,h4,h5,h6{font-size:1em}p,ul,ol,blockquote,table,pre,hr{margin:0}strong{font-weight:600}a{color:var(--md-link);text-decoration:none}a:hover{text-decoration:underline}ul,ol{display:flex;flex-direction:column;gap:6px;padding-left:22px}ul{list-style:disc}ol{list-style:decimal}:is(li,td,th)>*+:is(p,ul,ol,blockquote){margin-top:6px}blockquote{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--md-rule);padding-left:10px;color:var(--md-muted)}:not(pre)>code{background:var(--md-fill);padding:1px 3px;border-radius:4px;font:.92em 'SF Mono',ui-monospace,Menlo,Consolas,monospace}a>code{background:none;color:inherit}pre{background:var(--md-fill);padding:10px 12px;border-radius:6px;overflow-x:auto;font:12px/1.5 'SF Mono',ui-monospace,Menlo,Consolas,monospace;margin-block:4px}pre code{background:none;padding:0;font:inherit}table{width:100%;border-collapse:separate;border-spacing:2px;font:inherit}th,td{padding:6px 8px;border-radius:3px;text-align:left;vertical-align:top}th{background:var(--md-fill-strong);font-weight:600}td{background:var(--md-fill)}:is(th,td) :not(pre)>code{background:transparent}hr{border:0;border-top:1px solid var(--md-rule-strong);margin-block:10px}img{max-width:100%;height:auto;border-radius:4px}</style>
+</head><body>
+<h1>Tutorial: Padronização de Repositórios (GitHub + Databricks + Power BI)</h1>
+<p><strong>Time COIN — SEDUC-SP</strong></p>
+<h2>1. Por que padronizar?</h2>
+<p>Criamos um <strong>repositório-modelo</strong> (<code>modelo_repositorio</code>) para que todo projeto do time nasça com a mesma estrutura. Assim, criar, manter e auditar um projeto fica mais fácil, organizado e previsível, e qualquer pessoa do time consegue entender e dar continuidade ao que foi desenvolvido.</p>
+<p>O modelo contém:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Para que serve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DDL/</code></td>
+<td>Scripts de definição de estrutura (ex.: <code>CREATE TABLE</code>, <code>ALTER TABLE</code>).</td>
+</tr>
+<tr>
+<td><code>DML/</code></td>
+<td>Scripts de manipulação/carga de dados (ex.: <code>INSERT</code>, <code>MERGE</code>, transformações).</td>
+</tr>
+<tr>
+<td><code>PBIP/</code></td>
+<td>Projeto do Power BI em formato versionável (<code>.pbip</code>).</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>Documentação viva: o que o projeto faz e o histórico de alterações.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Regra de ouro:</strong> a branch <code>main</code> é a versão de produção. Os pipelines rodam a partir dela, então <strong>nunca desenvolvemos direto na <code>main</code></strong>. Todo desenvolvimento acontece em uma branch pessoal de desenvolvimento.</p>
+<hr>
+<h2>2. Criar um novo repositório a partir do modelo</h2>
+<ol>
+<li>No GitHub, abra o repositório <code>modelo_repositorio</code> da organização <strong>COIN-SEDUC</strong>.</li>
+<li>Clique no botão verde <strong>Use this template</strong> → <strong>Create a new repository</strong>.</li>
+<li>Preencha:
+<ul>
+<li><strong>Owner:</strong> <code>COIN-SEDUC</code></li>
+<li><strong>Repository name:</strong> nome do projeto, sem espaços e em minúsculas (ex.: <code>dashboard_concluintes</code>). <em>[Ajuste aqui se o time tiver outra convenção de nomes.]</em></li>
+<li><strong>Visibility:</strong> <strong>Private</strong></li>
+<li><strong>Description:</strong> uma frase dizendo o objetivo do projeto.</li>
+</ul>
+</li>
+<li>Clique em <strong>Create repository</strong>.</li>
+</ol>
+<p>O novo repositório já vem com <code>DDL</code>, <code>DML</code>, <code>PBIP</code> e <code>README.md</code>. Abra o <code>README.md</code> e preencha o nome do projeto, o objetivo e os responsáveis.</p>
+<blockquote>
+<p>Um repositório criado a partir de um template começa com histórico limpo, sem carregar os commits do modelo.</p>
+</blockquote>
+<hr>
+<h2>3. Trazer o repositório para o Databricks</h2>
+<p>Usaremos <strong>duas cópias</strong> do repositório no Databricks:</p>
+<ul>
+<li><strong>Pasta compartilhada</strong> → contém a <code>main</code>. É a que os jobs/pipelines executam.</li>
+<li><strong>Pasta pessoal</strong> (prefixo <code>dev</code>) → sua cópia de trabalho, onde você desenvolve e testa sem afetar ninguém.</li>
+</ul>
+<h3>3.1 Pasta compartilhada (branch <code>main</code>)</h3>
+<p><em>Normalmente feita uma única vez, por quem cria o projeto.</em></p>
+<ol>
+<li>No Databricks, vá em <strong>Workspace</strong> → pasta compartilhada do time.</li>
+<li>Clique em <strong>Create</strong> → <strong>Git folder</strong>.</li>
+<li>Cole a URL do repositório (<code>https://github.com/COIN-SEDUC/nome_do_repositorio</code>), confirme o provedor <strong>GitHub</strong> e crie.</li>
+<li>Confirme que a branch é a <code>main</code>.</li>
+</ol>
+<blockquote>
+<p>Se o Databricks pedir credenciais, configure sua conta GitHub em <strong>Settings → Linked accounts</strong> (com um Personal Access Token).</p>
+</blockquote>
+<h3>3.2 Pasta pessoal (branch de desenvolvimento)</h3>
+<ol>
+<li>Vá em <strong>Workspace → Users → seu usuário</strong> (sua pasta pessoal).</li>
+<li><strong>Create → Git folder</strong>, com a <strong>mesma URL</strong> do repositório.</li>
+<li>Dê um nome com prefixo <code>dev</code>, por exemplo <code>dev_dashboard_concluintes</code>.</li>
+<li>Dentro dessa pasta, abra o menu de Git (ícone da branch), clique em <strong>Create branch</strong> e crie a sua branch de desenvolvimento no padrão <strong><code>dev_seunome</code></strong> (ex.: <code>dev_lucas</code>).</li>
+<li>Confirme que a pasta pessoal está apontando para <code>dev_seunome</code>, <strong>não</strong> para a <code>main</code>.</li>
+</ol>
+<p>Pronto: tudo que você editar na pasta pessoal fica isolado. Se algo quebrar ou uma feature ficar pela metade, os pipelines de produção não são afetados.</p>
+<blockquote>
+<p>Se mais de uma pessoa trabalha no mesmo projeto, cada uma cria a sua branch (<code>dev_lucas</code>, <code>dev_maria</code>, ...).</p>
+</blockquote>
+<hr>
+<h2>4. Ciclo de desenvolvimento (Databricks)</h2>
+<p>Vale para qualquer nova feature ou correção de bug em scripts, notebooks e tabelas.</p>
+<ol>
+<li><strong>Atualize sua branch</strong> antes de começar: na pasta pessoal, faça <strong>Pull</strong> para trazer o que houver de novo.</li>
+<li><strong>Desenvolva na pasta <code>dev</code></strong>: a alteração vai em <code>DDL/</code> (estrutura) ou <code>DML/</code> (carga e transformação), conforme o caso.</li>
+<li><strong>Teste</strong> antes de qualquer commit. Rode os notebooks/queries e confira os resultados.</li>
+<li><strong>Atualize o <code>README.md</code></strong> com a data e o que foi feito (modelo na seção 6).</li>
+<li><strong>Revise as alterações</strong> na tela de Git do Databricks (diff) e confirme que só subirão os arquivos que você quis alterar.</li>
+<li><strong>Commit e push</strong> na sua branch <code>dev_seunome</code>, com uma mensagem clara (ex.: <code>fix: corrige filtro de status na carga de matrículas</code>).</li>
+<li><strong>Leve as alterações para a <code>main</code></strong> (seção 5).</li>
+<li><strong>Valide o pipeline</strong> (seção 5.3).</li>
+</ol>
+<hr>
+<h2>5. Levar as alterações para a <code>main</code> e validar</h2>
+<h3>5.1 Merge</h3>
+<ol>
+<li>Abra a <strong>pasta compartilhada</strong> (a que está na <code>main</code>).</li>
+<li>Faça <strong>Pull</strong> para garantir que ela está atualizada.</li>
+<li>No menu de Git, use <strong>Merge</strong> e selecione a sua branch <code>dev_seunome</code> para incorporá-la à <code>main</code>.</li>
+<li>Resolva conflitos, se houver, e faça o <strong>push</strong> da <code>main</code>.</li>
+</ol>
+<p><em>Alternativa:</em> abrir um <strong>Pull Request</strong> no GitHub de <code>dev_seunome</code> para <code>main</code>. É a opção mais indicada quando outra pessoa precisa revisar o que você fez.</p>
+<h3>5.2 Atualize sua pasta pessoal</h3>
+<p>Depois do merge, volte à pasta <code>dev</code> e faça <strong>Pull da <code>main</code></strong> para que sua branch fique alinhada com a produção.</p>
+<h3>5.3 Validar o pipeline</h3>
+<p><strong>Se o projeto tem um pipeline/job ativo</strong>, confirme que ele continua funcionando:</p>
+<ol>
+<li>Vá em <strong>Jobs &amp; Pipelines</strong> e abra o job do projeto.</li>
+<li>Rode-o manualmente (ou aguarde a próxima execução agendada).</li>
+<li>Verifique se terminou com <strong>sucesso</strong> e se os dados de saída estão corretos.</li>
+<li>Se falhou, <strong>reverta ou corrija imediatamente</strong> e avise o time.</li>
+</ol>
+<hr>
+<h2>6. Como registrar no README</h2>
+<p>Toda alteração entra no <code>README.md</code> <strong>antes</strong> do merge, em uma seção de histórico. Sugestão de formato:</p>
+<pre><code class="language-markdown">## Histórico de alterações
+
+| Data | Responsável | Tipo | O que foi feito |
+|---|---|---|---|
+| 23/09/2026 | Nome | Feature | Adicionada coluna X na tabela Y (DDL) e ajustada a carga (DML). |
+| 20/09/2026 | Nome | Correção | Corrigido filtro de status que duplicava registros. |
+</code></pre>
+<p>Registre: <strong>data</strong>, <strong>quem fez</strong>, <strong>tipo</strong> (feature, correção, ajuste) e <strong>o que mudou e por quê</strong>, de forma que outra pessoa entenda sem precisar perguntar.</p>
+<hr>
+<h2>7. Power BI (PBIP)</h2>
+<p>O formato <code>.pbip</code> salva o relatório como <strong>arquivos de texto</strong> (em vez de um <code>.pbix</code> binário). Isso permite versionar no GitHub, ver o que mudou entre versões e trabalhar com branches, exatamente como fazemos com o código.</p>
+<h3>7.1 Preparação (uma vez)</h3>
+<ol>
+<li>Instale o <strong>Git</strong> e clone o repositório na sua máquina (GitHub Desktop, VS Code ou <code>git clone</code>).</li>
+<li>No Power BI Desktop, verifique se a opção de salvar como projeto está habilitada. Se não aparecer, ative em <strong>Arquivo → Opções e configurações → Opções → Recursos de visualização</strong> (<strong>Power BI Project (.pbip)</strong>) e reinicie o Desktop.</li>
+</ol>
+<h3>7.2 Criar o arquivo PBIP</h3>
+<ol>
+<li>Crie ou abra o seu relatório no Power BI Desktop.</li>
+<li>Vá em <strong>Arquivo → Salvar como</strong> e escolha o tipo <strong>Power BI Project (.pbip)</strong>.</li>
+<li>Salve <strong>dentro da pasta <code>PBIP/</code></strong> do repositório clonado.</li>
+<li>Serão criados o arquivo <code>.pbip</code> e as pastas <code>.Report</code> e <code>.SemanticModel</code>. Esses são os itens versionados.</li>
+</ol>
+<h3>7.3 Ciclo de desenvolvimento (Power BI)</h3>
+<p>O ciclo é o mesmo do Databricks:</p>
+<ol>
+<li>Na sua máquina, crie/troque para a sua branch <code>dev_seunome</code> e faça <strong>pull</strong>.</li>
+<li>Abra o <code>.pbip</code> e <strong>desenvolva</strong> a feature ou correção.</li>
+<li><strong>Teste</strong> (números conferem com a fonte? visuais, filtros e atualização funcionam?).</li>
+<li><strong>Atualize o <code>README.md</code></strong> com data e o que foi feito.</li>
+<li><strong>Revise</strong> as alterações (diff) e faça <strong>commit + push</strong> na sua branch, com mensagem clara.</li>
+<li><strong>Merge na <code>main</code></strong> (por Pull Request no GitHub, preferencialmente).</li>
+<li><strong>Publique</strong> a versão da <code>main</code> no workspace do Power BI Service e <strong>valide</strong> a atualização do modelo e o relatório publicado.</li>
+</ol>
+<blockquote>
+<p>Publique sempre a partir da versão que está na <code>main</code>, para que o que está no Service corresponda ao que está documentado no GitHub.</p>
+</blockquote>
+<hr>
+<h2>8. Usando o Genie Code</h2>
+<p><strong>Recomendado:</strong> usar o Genie Code para <strong>redigir/atualizar o README</strong> (resumir alterações, organizar o histórico, padronizar a escrita). Lembre-se de conferir o texto antes de subir.</p>
+<p><strong>Cuidado redobrado com commits:</strong> evite pedir ao Genie Code que faça os commits por você. Um commit é um registro oficial do que entra no projeto, e ele pode incluir arquivos que você não pretendia alterar. Recomendamos que <strong>os commits e todas as revisões sejam feitos por você, de forma clara</strong>, conferindo o diff e escrevendo a mensagem antes de subir para o GitHub.</p>
+<hr>
+<h2>9. Checklist rápido</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Estou trabalhando na minha branch <code>dev_seunome</code> (não na <code>main</code>)</li>
+<li><input disabled="" type="checkbox"> Testei a alteração</li>
+<li><input disabled="" type="checkbox"> Atualizei o <code>README.md</code> com data e descrição</li>
+<li><input disabled="" type="checkbox"> Revisei o diff antes do commit</li>
+<li><input disabled="" type="checkbox"> Commit com mensagem clara e push feitos</li>
+<li><input disabled="" type="checkbox"> Merge na <code>main</code> concluído</li>
+<li><input disabled="" type="checkbox"> Pipeline/relatório validado após o merge</li>
+<li><input disabled="" type="checkbox"> Minha pasta <code>dev</code> está atualizada com a <code>main</code></li>
+</ul>
+<hr>
+<h2>10. Por que vale o esforço</h2>
+<p>Esse processo adiciona um tempo extra a cada desenvolvimento: criar branch, testar, documentar, revisar e validar. Esse tempo é um investimento. Ele mantém tudo <strong>documentado, auditável e seguro para a produção</strong>, e garante que qualquer pessoa do time tenha condições de <strong>entender e manter</strong> o que foi desenvolvido, mesmo sem ter participado da construção.</p>
+
+</body></html>
